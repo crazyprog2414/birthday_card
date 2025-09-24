@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>For My Love</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --w: 920px; --h: 560px; --r: 22px;
+    --shadow: 0 24px 70px rgba(0,0,0,.35);
+    --g1:#ff9ec3; --g2:#ff6a98; --g3:#c81368;
+    /* default photo (you can change it or just upload/paste at runtime) */
+    --photo-url: url("./her.jpg");
+  }
+  *{box-sizing:border-box}
+  html,body{
+    height:100%; margin:0; overflow:hidden;
+    background:
+      radial-gradient(1200px 800px at 30% 20%, rgba(255,255,255,.16), transparent 60%),
+      radial-gradient(1000px 900px at 80% 10%, rgba(255,255,255,.12), transparent 60%),
+      linear-gradient(145deg, var(--g1) 0%, var(--g2) 45%, var(--g3) 100%);
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  /* Hearts */
+  .hearts{ position:fixed; inset:0; pointer-events:none; z-index:0; }
+  .heart{
+    position:fixed; top:-60px; width:26px; height:24px;
+    background:center/100% 100% no-repeat;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,.18));
+    animation: fall linear forwards;
+  }
+  .heart.red{
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 32'><path d='M26.5,1.5c-3.4,0-6,2-8.5,5C15.5,3.5,12.9,1.5,9.5,1.5C4.3,1.5,0,5.7,0,11.2c0,10.2,18,19.1,18,19.1s18-8.9,18-19.1C36,5.7,31.7,1.5,26.5,1.5z' fill='%23e5104f' stroke='white' stroke-width='2'/></svg>");
+  }
+  @keyframes fall{
+    0%{ transform:translateY(-80px) translateX(0) rotate(0); opacity:0 }
+    10%{ opacity:.95 }
+    100%{ transform:translateY(120vh) translateX(var(--dx)) rotate(360deg); opacity:0 }
+  }
+
+  /* Toolbar */
+  .toolbar{
+    position:fixed; top:14px; left:14px; z-index:2; display:flex; gap:8px;
+  }
+  .btn{
+    appearance:none; border:0; border-radius:999px; padding:10px 14px;
+    font:600 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    color:#fff; cursor:pointer; box-shadow:0 10px 25px rgba(0,0,0,.25);
+    background:linear-gradient(135deg,#ff6ea1,#c81368);
+  }
+  .btn.secondary{ background:linear-gradient(135deg,#ff96bd,#ff6ea1); }
+  input[type=file]{ display:none; }
+
+  /* Stage & card */
+  .stage{ position:relative; z-index:1; height:100%; display:grid; place-items:center; padding:28px; }
+  .card{ width:var(--w); height:var(--h); position:relative; perspective:1800px; }
+  .card-inner{
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d;
+    transition: transform 1.05s cubic-bezier(.2,.7,.2,1);
+  }
+  .card.open .card-inner{ transform: rotateY(180deg) }
+
+  .side{
+    position:absolute; inset:0; border-radius:var(--r);
+    box-shadow:var(--shadow); overflow:hidden; backface-visibility:hidden;
+    background:#fff;
+  }
+
+  /* FRONT = photo */
+  .front{ cursor:pointer; display:grid; place-items:center; }
+  .front::before{
+    content:""; position:absolute; inset:0;
+    background:#eee center/cover no-repeat;
+    background-image:var(--photo-url);
+    filter:saturate(1.05) contrast(1.03);
+  }
+  /* ↓↓↓ HEADLINE MOVED TO BOTTOM ↓↓↓ */
+  .front .headline{
+    position:absolute; left:0; right:0; bottom:22px;
+    text-align:center;
+    font-family:'Great Vibes', cursive;
+    font-size:52px; letter-spacing:.5px;
+    color:#fff;
+    text-shadow:
+      0 2px 14px rgba(0,0,0,.45),
+      0 0 2px rgba(0,0,0,.6);
+    padding:0 14px;
+    pointer-events:none;
+  }
+
+  /* BACK = message */
+  .back{
+    transform: rotateY(180deg);
+    display:flex; align-items:center; justify-content:center;
+    background:#fff;
+  }
+  .paper{
+    width:min(90%, 760px);
+    height:min(86%, 460px);
+    padding:30px 28px;
+    border-radius:16px;
+    background:#fff;
+    box-shadow: inset 0 0 110px rgba(211,22,109,.10);
+    overflow:auto; scrollbar-width:thin;
+  }
+  .paper:after{
+    content:""; position:sticky; left:0; bottom:-1px; right:0; height:36px;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, #fff 70%);
+    pointer-events:none;
+  }
+  .title{
+    margin:0 0 8px; text-align:center;
+    font-family:'Great Vibes', cursive; font-size:48px;
+    background: linear-gradient(90deg,#ffadc6 0%,#ff6b9a 45%,#c81368 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .message{ margin:4px 0 0; color:#2a2a2a; font-size:20px; line-height:1.8; }
+
+  @media (max-width:980px){
+    :root{ --w:94vw; --h:62vw; }
+    .front .headline{ font-size:42px }
+    .title{ font-size:42px }
+    .message{ font-size:18px; line-height:1.75 }
+  }
+</style>
+</head>
+<body>
+
+<div class="hearts" id="hearts"></div>
+
+<div class="toolbar">
+  <label class="btn" for="imgInput">Upload Photo</label>
+  <button class="btn secondary" id="pasteBtn" type="button">Paste URL</button>
+  <input id="imgInput" type="file" accept="image/*">
+</div>
+
+<main class="stage">
+  <section class="card" id="card">
+    <div class="card-inner">
+      <!-- FRONT -->
+      <article class="side front" id="front" title="Click to flip">
+        <div class="headline">Happy Birthday, my love</div>
+      </article>
+      <!-- BACK -->
+      <article class="side back" aria-label="Message">
+        <div class="paper">
+          <h2 class="title">For You</h2>
+          <p class="message">
+            You mean the world to me baby. 
+            Every moment with you is a treasure, and I am so so so so so
+            grateful to have you in my life. Your smile lights up my day like if it's caffeine for my soul,
+            and your love, it fills my heart with joy. You are not just my girlfriend, you are my best friend, my box of joy, my lil dumpling. 
+            Baby life without you would have been so dull and so boring, absolutely one not worth enjoying. I want to gift you every lil thing that you once kept your hand on or wished for.
+            I pray we stay together forever and ever, till the end of time.
+            I love you more than words can express, and I can't wait to meet you again and hug you and kiss you and f you.
+            Happiest Birthday my Love. You truly are unique and closest to my heart, fuck you!
+            I love you my baby.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<script>
+  // Flip
+  const card = document.getElementById('card');
+  const front = document.getElementById('front');
+  front.addEventListener('click', () => card.classList.toggle('open'));
+  document.querySelector('.back').addEventListener('click', () => card.classList.toggle('open'));
+
+  // Upload photo
+  const imgInput = document.getElementById('imgInput');
+  imgInput.addEventListener('change', e=>{
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => document.documentElement.style.setProperty('--photo-url', `url('${reader.result}')`);
+    reader.readAsDataURL(file);
+  });
+
+  // Paste URL
+  document.getElementById('pasteBtn').addEventListener('click', ()=>{
+    const u = prompt("Paste an image URL (https://...)");
+    if(!u) return;
+    document.documentElement.style.setProperty('--photo-url', `url('${u.replace(/'/g,"\\'")}')`);
+  });
+
+  // Heart shower
+  const heartsLayer = document.getElementById('hearts');
+  function spawnHeart(){
+    const h = document.createElement('span'); h.className='heart red';
+    const size = 16 + Math.random()*22, left = Math.random()*100, drift=(Math.random()*120-60)+'px', dur=6+Math.random()*6;
+    h.style.width=size+'px'; h.style.height=size*0.9+'px'; h.style.left=left+'vw'; h.style.setProperty('--dx',drift); h.style.animationDuration=dur+'s';
+    heartsLayer.appendChild(h); h.addEventListener('animationend', ()=>h.remove());
+  }
+  const RATE = 6; setInterval(spawnHeart, 1000/RATE); for(let i=0;i<12;i++) setTimeout(spawnHeart, i*120);
+</script>
+
+</body>
+</html>
